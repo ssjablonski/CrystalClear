@@ -6,8 +6,10 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 
 # Load the model
-model = load_model('models/cnn2AA21kNowyKod.keras')
+model = load_model('models/cnn2AA21kNowyKod5tren76.keras')
+# C:\Users\48573\Desktop\projekty\CrystalClear\models\cnn2NowyKod2tren3.keras
 # C:\Users\48573\Desktop\projekty\CrystalClear\models\cnn2AA21kNowyKod.keras
+# C:\Users\48573\Desktop\projekty\CrystalClear\models\cnn2AA21kNowyKod5tren76.keras
 
 # Define the directory
 data_dir = 'aa'
@@ -56,12 +58,11 @@ for i, subdir in enumerate(subdirs, start=1):
     print(f'Actual class: {actual_class}, Top three predicted classes: {predicted_classes}')
 
     # Add subplot for the image
-    ax = fig.add_subplot(5, 5, i)  # adjust numbers according to the number of subdirectories
-    ax.imshow(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB))
-    ax.title.set_text(f'Actual: {actual_class}, Predicted: {predicted_classes}')
+    # ax = fig.add_subplot(5, 5, i)  # adjust numbers according to the number of subdirectories
+    # ax.imshow(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB))
+    # ax.title.set_text(f'Actual: {actual_class}, Predicted: {predicted_classes}')
 
 # Show all images at once
-plt.show()
 
 # Calculate and print accuracy
 accuracy = correct_predictions / len(subdirs)
