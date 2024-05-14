@@ -48,6 +48,8 @@ def predict():
         prediction = model.predict(img_array)
         top_three_indices = np.argsort(prediction[0])[-3:]  # get top 3 predictions
         predicted_classes = [class_names[i] for i in top_three_indices]
+        # Zwróć wynik
+        return jsonify({'prediction': predicted_classes[::-1]})
 
         # Zwróć wynik
         return jsonify({'prediction': predicted_classes})

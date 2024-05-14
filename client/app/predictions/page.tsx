@@ -1,0 +1,116 @@
+"use client";
+
+import React, { useState } from "react";
+import axios from "axios";
+import Image from "next/image";
+import Navbar from "@/components/Navbar";
+
+const Prediction: React.FC = () => {
+  const [file, setFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const fileInputRef = React.createRef();
+
+    const predictionMapping = {
+        'black_onyx': 'Black Onyx',
+        'blue_sapphire': 'Blue Sapphire',
+        'lapis_lazuli': 'Lapis Lazuli',
+        'pink_sapphire': 'Pink Sapphire',
+        'quartz_clear': 'Clear Quartz',
+        'quartz_smoky': 'Smoky Quartz',
+    }
+
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const handleReset = () => {
+    setFile(null);
+    setImagePreview(null);
+    setPrediction(null);
+  };
+
+  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/predict",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setPrediction(response.data.prediction);      
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  return (
+    <div>
+        <Navbar />
+        <div className="flex flex-col">
+            <h1 className="text-4xl mx-auto py-4">Recognize your stone now!</h1>
+            <p className="text-2xl mx-auto pt-2 pb-6">With just a simple click you can discover informations about your stone</p>
+            {imagePreview && (
+                <div>
+                    <h1 className="text-xl flex justify-center">File that you uploaded:</h1>
+                    <Image
+                        className="object-cover rounded-xl mt-4 mx-auto"
+                        src={imagePreview}
+                        alt="Preview"
+                        width={400}
+                        height={400}
+                    />
+                </div>
+            )}
+            <form onSubmit={handleSubmit} className="mx-auto">
+                <div className="flex flex-col py-4 rounded">
+                    <label className="flex-1 w-full flex flex-col items-center mb-2 px-4 py-4 bg-accent text-white rounded-lg tracking-wide uppercase cursor-pointer hover:bg-darkAccent">
+                        <span className="mt-2 text-base leading-normal">Select a file</span>
+                        <input type="file" className="hidden" onChange={handleFileChange}/>
+                    </label>
+                    <div className="flex">
+                        <button className="flex-1 mr-2 bg-accent text-white rounded-xl p-4 uppercase cursor-pointer flex-grow" type="submit">
+                            Upload and Predict
+                        </button>
+                        <button className="flex-1 bg-accent text-white rounded-xl p-4 uppercase cursor-pointer" onClick={() => handleReset()}>
+                            Reset
+                        </button>
+                    </div>
+                    
+                </div>
+                
+            </form>
+            
+            {prediction && (
+                <div className="flex flex-col justify-center mx-auto">
+                    <h3 className="text-2xl">Here are the most possible answers:</h3>
+                    <ul className="flex flex-col mx-auto">
+                        {prediction.map((value, index) => (
+                            <li className="text-xl uppercase" key={index}>{`${index + 1}: ${predictionMapping[value] || value}`}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+        </div>
+    </div>
+  );
+}
+
+export default Prediction;
