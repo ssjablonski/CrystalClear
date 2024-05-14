@@ -51,8 +51,6 @@ def predict():
         # Zwróć wynik
         return jsonify({'prediction': predicted_classes[::-1]})
 
-        # Zwróć wynik
-        return jsonify({'prediction': predicted_classes})
 
 if __name__ == '__main__':
     app.run(debug=True)
