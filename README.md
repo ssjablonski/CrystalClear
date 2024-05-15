@@ -80,6 +80,12 @@ The application will be accessible at http://localhost:3000.
 3. Viewing Results: After uploading the image, the application will display predictions of the gemstone type.
 4. Make new prediction: After reading all the info you can go back and make another prediction by clicking the "Back to Predictions!" button.
 
+# License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+The MIT License (MIT)
+
 
 
 
