@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Alegreya, Aleo } from "next/font/google";
 import "./globals.css";
+import { ResultsProvider } from "./contexts/ResultsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const alegreya = Alegreya({ subsets: ["latin"] });
@@ -17,8 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={aleo.className}>{children}</body>
-    </html>
+    <ResultsProvider>
+      <html lang="en">
+        <body className={aleo.className}>{children}</body>
+      </html>
+    </ResultsProvider>
   );
 }

@@ -45,35 +45,35 @@ train = data.take(train_size)
 val = data.skip(train_size).take(val_size)
 test = data.skip(train_size + val_size).take(test_size)
 
-model = load_model('models/ADAM.keras')  
+# model = load_model('models/ADAM.keras')  
+# 
+model = Sequential([
+    Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(96, 96, 3)),
+    BatchNormalization(),
+    Conv2D(32, (3, 3), padding='same', activation='relu'),
+    MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
+    Dropout(0.25),
 
-# model = Sequential([
-#     Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(96, 96, 3)),
-#     BatchNormalization(),
-#     Conv2D(32, (3, 3), padding='same', activation='relu'),
-#     MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
-#     Dropout(0.25),
+    Conv2D(64, (3, 3), padding='same', activation='relu'),
+    BatchNormalization(),
+    Conv2D(64, (3, 3), padding='same', activation='relu'),
+    MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
+    Dropout(0.25),
 
-#     Conv2D(64, (3, 3), padding='same', activation='relu'),
-#     BatchNormalization(),
-#     Conv2D(64, (3, 3), padding='same', activation='relu'),
-#     MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
-#     Dropout(0.25),
+    Conv2D(128, (3, 3), padding='same', activation='relu'),
+    BatchNormalization(),
+    Conv2D(128, (3, 3), padding='same', activation='relu'),
+    MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
+    Dropout(0.25),
 
-#     Conv2D(128, (3, 3), padding='same', activation='relu'),
-#     BatchNormalization(),
-#     Conv2D(128, (3, 3), padding='same', activation='relu'),
-#     MaxPooling2D(pool_size=(4, 4)),  # increased pool_size
-#     Dropout(0.25),
+    Flatten(),
+    Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+    Dropout(0.5),
+    Dense(15, activation='softmax')
+])
 
-#     Flatten(),
-#     Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01)),
-#     Dropout(0.5),
-#     Dense(15, activation='softmax')
-# ])
-
-# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-# model.summary()
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.summary()
 
 
 earlystop = EarlyStopping(patience=10)
@@ -85,7 +85,7 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', patience=2, 
 # logdir = 'logs'
 # tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
 callbacks = [earlystop, modelCheck, learning_rate_reduction]
-hist = model.fit(train, epochs=30, validation_data=val, callbacks=callbacks)
+hist = model.fit(train, epochs=10, validation_data=val, callbacks=callbacks)
 
 # Plot performance
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))  # 1 row, 2 columns
@@ -121,4 +121,4 @@ print(f"Test Top-3 Accuracy: {top3_acc.result().numpy()}")
 
 
 # Save the Model
-model.save(os.path.join('models', 'ADAM2.keras'))
+model.save('models/ADAM2.h5')

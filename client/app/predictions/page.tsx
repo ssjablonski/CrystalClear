@@ -1,24 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useData } from "../contexts/ResultsContext";
 
 const Prediction: React.FC = () => {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [prediction, setPrediction] = useState(null);
+  const [prediction, setPrediction] = useState<string[] | null>(null);
   const fileInputRef = React.createRef();
+  const {data, addData, removeData, setSrc} = useData();
 
-    const predictionMapping = {
-        'black_onyx': 'Black Onyx',
-        'blue_sapphire': 'Blue Sapphire',
-        'lapis_lazuli': 'Lapis Lazuli',
-        'pink_sapphire': 'Pink Sapphire',
-        'quartz_clear': 'Clear Quartz',
-        'quartz_smoky': 'Smoky Quartz',
+  useEffect(() => {
+    if (prediction) {
+      redirect("/results");
     }
+  }, [prediction]);
 
 
   const handleFileChange = (e) => {
@@ -35,9 +37,8 @@ const Prediction: React.FC = () => {
     setFile(null);
     setImagePreview(null);
     setPrediction(null);
+    removeData();
   };
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,23 +55,26 @@ const Prediction: React.FC = () => {
           },
         }
       );
-      setPrediction(response.data.prediction);      
+      setPrediction(response.data.prediction);
+      addData(response.data.prediction);
+      setSrc(imagePreview)
     } catch (error) {
       console.error("Error uploading file:", error);
     }
   };
+
 
   return (
     <div>
         <Navbar />
         <div className="flex flex-col">
             <h1 className="text-4xl mx-auto py-4">Recognize your stone now!</h1>
-            <p className="text-2xl mx-auto pt-2 pb-6">With just a simple click you can discover informations about your stone</p>
+            <p className="text-2xl mx-auto pt-2 pb-6">With just a simple click you can discover informations about your stone!</p>
             {imagePreview && (
                 <div>
                     <h1 className="text-xl flex justify-center">File that you uploaded:</h1>
                     <Image
-                        className="object-cover rounded-xl mt-4 mx-auto"
+                        className="object-cover rounded-xl mt-4 mx-auto max-w-md max-h-96"
                         src={imagePreview}
                         alt="Preview"
                         width={400}
@@ -92,22 +96,8 @@ const Prediction: React.FC = () => {
                             Reset
                         </button>
                     </div>
-                    
                 </div>
-                
             </form>
-            
-            {prediction && (
-                <div className="flex flex-col justify-center mx-auto">
-                    <h3 className="text-2xl">Here are the most possible answers:</h3>
-                    <ul className="flex flex-col mx-auto">
-                        {prediction.map((value, index) => (
-                            <li className="text-xl uppercase" key={index}>{`${index + 1}: ${predictionMapping[value] || value}`}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
         </div>
     </div>
   );

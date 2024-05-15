@@ -16,7 +16,8 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 
 # Załaduj model
 model = load_model('models/ADAM.keras')
-class_names = sorted(os.listdir('new'))
+# model = load_model('models/ADAM.keras')
+class_names = ['amethyst', 'ametrine', 'aquamarine', 'black_onyx', 'blue_sapphire', 'citrine', 'diamond', 'emerald', 'lapis_lazuli', 'obsydian', 'pink_sapphire', 'quartz_clear', 'quartz_smoky', 'ruby', 'turquoise']
 # Dozwolone rozszerzenia plików
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -53,4 +54,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
